@@ -64,7 +64,7 @@ const Header = () => {
                 display: { xs: "none", sm: "block" },
               }}
             >
-              Chat-App
+            WasTalk
             </Typography>
 
             <Box
