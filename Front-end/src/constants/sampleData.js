@@ -19,12 +19,12 @@ export const samepleChats = [
 export const sampleUsers = [
   {
     avatar: "https://www.w3schools.com/howto/img_avatar.png",
-    name: "John Doe",
+    name: "Waseem Malik",
     _id: "1",
   },
   {
     avatar: "https://www.w3schools.com/howto/img_avatar.png",
-    name: "John Boi",
+    name: "Muhammad Talha",
     _id: "2",
   },
 ];
@@ -50,10 +50,10 @@ export const sampleMessage = [
   {
     attachments: [],
     content: "L*uda ka Message hai",
-    _id: "sfnsdjkfsdnfkjsbnd",
+    _id: "",
     sender: {
-      _id: "user._id",
-      name: "Chaman ",
+      _id: "1",  
+      name: "Hafiz Fahad Iqbal ",
     },
     chat: "chatId",
     createdAt: "2024-02-12T10:41:30.630Z",
@@ -67,10 +67,10 @@ export const sampleMessage = [
       },
     ],
     content: "",
-    _id: "sfnsdjkfsdnfkdddjsbnd",
+    _id: "sdfjs",
     sender: {
       _id: "sdfsdfsdf",
-      name: "Chaman  2",
+      name: "Chaman 2",
     },
     chat: "chatId",
     createdAt: "2024-02-12T10:41:30.630Z",

@@ -20,21 +20,28 @@ import React, { Suspense, lazy, useState } from "react";
 } from "@mui/icons-material";
 import { useNavigate } from 'react-router-dom';
   
+const SearchDialog = lazy(() => import("../specific/Search"));
+const NotificationDialog = lazy(() => import("../specific/Notifications"));
+const NewGroupDialog = lazy(() => import("../specific/NewGroup"));
 
 const Header = () => {
   const navigate = useNavigate();
   const notificationCount = 5;
+
+  const [isSearch, setIsSearch] = useState(false);
+  const [isNotification, setIsNotification] = useState(false);
+  const [isNewGroup, setIsNewGroup] = useState(false);
 
   const handleMobile = () => {
     // Handle mobile menu toggle
     console.log("Mobile menu toggled");
   };
   const openSearch = () => {
-    console.log("Search opened");
+    setIsSearch(true);
   };
 
   const openNewGroup = () => {
-    console.log("New group opened");
+    setIsNewGroup(true);
   };
   const navigateToGroup = () => {
     console.log("Navigated to group");
@@ -43,11 +50,9 @@ const Header = () => {
     console.log("User logged out");
   };
   const openNotification = () => {
-    console.log("Notification opened");
+    setIsNotification(true);
   };
-  const isSearch = false;
-  const isNotification = false;
-  const isNewGroup = false;
+
   return (
    <>
    <Box sx={{ flexGrow: 1 }} height={"4rem"}>
