@@ -43,9 +43,8 @@ const Header = () => {
   const openNewGroup = () => {
     setIsNewGroup(true);
   };
-  const navigateToGroup = () => {
-    console.log("Navigated to group");
-  };
+  const navigateToGroup = () => navigate("/groups");
+  
   const logoutHandler = () => {
     console.log("User logged out");
   };
