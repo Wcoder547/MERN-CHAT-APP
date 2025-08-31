@@ -90,6 +90,7 @@ const getMyGroups = TryCatch(async (req, res, next) => {
 
 const addMembers = TryCatch(async (req, res, next) => {
   const { chatId, members } = req.body;
+  console.log(chatId, members);
 
   const chat = await Chat.findById(chatId);
 
@@ -373,6 +374,7 @@ const deleteChat = TryCatch(async (req, res, next) => {
 });
 
 const getMessages = TryCatch(async (req, res, next) => {
+  console.log(req.params.id);
   const chatId = req.params.id;
   const { page = 1 } = req.query;
 

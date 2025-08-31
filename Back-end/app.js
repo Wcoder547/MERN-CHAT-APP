@@ -8,7 +8,6 @@ import { createServer } from "http";
 import { v4 as uuid } from "uuid";
 import cors from "cors";
 import { v2 as cloudinary } from "cloudinary";
-import { createUser } from "./seeders/user.js";
 import {
   CHAT_JOINED,
   CHAT_LEAVED,
