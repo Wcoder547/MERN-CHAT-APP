@@ -17,7 +17,9 @@ const ChatItem = ({
 }) => {
   return (
     <Link
-      sx={{ padding: 0 }}
+      sx={{
+        padding: "0",
+      }}
       to={`/chat/${_id}`}
       onContextMenu={(e) => handleDeleteChat(e, _id, groupChat)}
     >
@@ -39,8 +41,8 @@ const ChatItem = ({
 
         <Stack>
           <Typography>{name}</Typography>
-          {newMessageAlert?.count > 0 && (
-            <Typography>{newMessageAlert.count} New Message(s)</Typography>
+          {newMessageAlert && (
+            <Typography>{newMessageAlert.count} New Message</Typography>
           )}
         </Stack>
 

@@ -8,38 +8,57 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import React, { memo } from "react";
-import { sampleNotifications } from "../../constants/sampleData";
-
+import  { memo } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useAsyncMutation, useErrors } from "../../hooks/hook";
+import {
+  useAcceptFriendRequestMutation,
+  useGetNotificationsQuery,
+} from "../../redux/api/api";
+import { setIsNotification } from "../../redux/reducers/misc";
 
 const Notifications = () => {
+  const { isNotification } = useSelector((state) => state.misc);
+
+  const dispatch = useDispatch();
+
+  const { isLoading, data, error, isError } = useGetNotificationsQuery();
+
+  const [acceptRequest] = useAsyncMutation(useAcceptFriendRequestMutation);
+
   const friendRequestHandler = async ({ _id, accept }) => {
-    // Handle friend request acceptance or rejection
-    if (accept) {
-      console.log(`Accepted friend request from ${_id}`);
-    } else {
-      console.log(`Rejected friend request from ${_id}`);
-    }
+    dispatch(setIsNotification(false));
+    await acceptRequest("Accepting...", { requestId: _id, accept });
   };
 
+  const closeHandler = () => dispatch(setIsNotification(false));
+
+  useErrors([{ error, isError }]);
+
   return (
-    <Dialog open >
+    <Dialog open={isNotification} onClose={closeHandler}>
       <Stack p={{ xs: "1rem", sm: "2rem" }} maxWidth={"25rem"}>
         <DialogTitle>Notifications</DialogTitle>
+
+        {isLoading ? (
+          <Skeleton />
+        ) : (
           <>
-            {sampleNotifications.length > 0 ? (
-              sampleNotifications.map(({ sender, _id }) => (
+            {data?.allRequests.length > 0 ? (
+              data?.allRequests?.map(({ sender, _id }) => (
                 <NotificationItem
                   sender={sender}
                   _id={_id}
                   handler={friendRequestHandler}
+                  key={_id}
                 />
               ))
             ) : (
               <Typography textAlign={"center"}>0 notifications</Typography>
             )}
           </>
-        </Stack>
+        )}
+      </Stack>
     </Dialog>
   );
 };
@@ -59,7 +78,7 @@ const NotificationItem = memo(({ sender, _id, handler }) => {
         <Typography
           variant="body1"
           sx={{
-            flexGrow  : 1,
+            flexGrow: 1,
             display: "-webkit-box",
             WebkitLineClamp: 1,
             WebkitBoxOrient: "vertical",
@@ -86,6 +105,5 @@ const NotificationItem = memo(({ sender, _id, handler }) => {
     </ListItem>
   );
 });
-
 
 export default Notifications;

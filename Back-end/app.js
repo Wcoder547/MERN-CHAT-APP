@@ -3,8 +3,8 @@ import { connectDB } from "./utils/features.js";
 import dotenv from "dotenv";
 import { errorMiddleware } from "./middlewares/error.js";
 import cookieParser from "cookie-parser";
-import { Server } from "socket.io";
-import { createServer } from "http";
+import { Server } from "socket.io"; //
+import { createServer } from "http"; //
 import { v4 as uuid } from "uuid";
 import cors from "cors";
 import { v2 as cloudinary } from "cloudinary";
@@ -66,17 +66,21 @@ app.get("/", (req, res) => {
   res.send("Hello World");
 });
 
+//middleware for socket authentication
 io.use((socket, next) => {
   cookieParser()(
+    //can read cookies).
     socket.request,
     socket.request.res,
-    async (err) => await socketAuthenticator(err, socket, next)
+    async (err) => await socketAuthenticator(err, socket, next) //method for authenticating socket connections
   );
 });
 
 io.on("connection", (socket) => {
+  console.log("New client connected:", socket.id);
   const user = socket.user;
   userSocketIDs.set(user._id.toString(), socket.id);
+  console.log(`User connected: ${user.name}`);
 
   socket.on(NEW_MESSAGE, async ({ chatId, members, message }) => {
     const messageForRealTime = {

@@ -27,6 +27,15 @@ import { Link } from "../components/styles/StyledComponents";
 import { bgGradient, matBlack } from "../constants/color";
 import { useDispatch, useSelector } from "react-redux";
 import UserItem from "../components/shared/UserItem";
+import { useAsyncMutation, useErrors } from "../hooks/hook";
+import {
+  useChatDetailsQuery,
+  useDeleteChatMutation,
+  useMyGroupsQuery,
+  useRemoveGroupMemberMutation,
+  useRenameGroupMutation,
+} from "../redux/api/api";
+import { setIsAddMember } from "../redux/reducers/misc";
 
 const ConfirmDeleteDialog = lazy(() =>
   import("../components/dialogs/ConfirmDeleteDialog")
@@ -40,7 +49,7 @@ const Groups = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
- 
+  const { isAddMember } = useSelector((state) => state.misc);
 
   const myGroups = useMyGroupsQuery("");
 
@@ -49,11 +58,17 @@ const Groups = () => {
     { skip: !chatId }
   );
 
-  const [updateGroup, isLoadingGroupName] = useState();
+  const [updateGroup, isLoadingGroupName] = useAsyncMutation(
+    useRenameGroupMutation
+  );
 
-  const [removeMember, isLoadingRemoveMember] = useState();
+  const [removeMember, isLoadingRemoveMember] = useAsyncMutation(
+    useRemoveGroupMemberMutation
+  );
 
-  const [deleteGroup, isLoadingDeleteGroup] = useState();
+  const [deleteGroup] = useAsyncMutation(
+    useDeleteChatMutation
+  );
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
@@ -64,7 +79,19 @@ const Groups = () => {
 
   const [members, setMembers] = useState([]);
 
- 
+  const errors = [
+    {
+      isError: myGroups.isError,
+      error: myGroups.error,
+    },
+    {
+      isError: groupDetails.isError,
+      error: groupDetails.error,
+    },
+  ];
+
+  useErrors(errors);
+
   useEffect(() => {
     const groupData = groupDetails.data;
     if (groupData) {
