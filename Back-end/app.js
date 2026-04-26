@@ -39,7 +39,7 @@ const onlineUsers = new Set();
 
 connectDB(mongoURI);
 
-console.log("ci/cd pipeline test");
+console.log("laadle ci/cd pipeline bna li he ");
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
