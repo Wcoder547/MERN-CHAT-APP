@@ -9,34 +9,61 @@ env:
   FRONTEND_IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/mern-chat-app-frontend
 
 jobs:
-  build-and-deploy:
+  build:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-
-      - name: Build and push backend image
+      - name: Build and push backend
         uses: docker/build-push-action@v5
         with:
           context: ./Back-end
           push: true
           tags: ${{ env.BACKEND_IMAGE }}:latest
-
-      - name: Build and push frontend image
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+      - name: Build and push frontend
         uses: docker/build-push-action@v5
         with:
           context: ./Front-end
           push: true
           tags: ${{ env.FRONTEND_IMAGE }}:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
-      - name: Deploy to EC2
+  deploy-staging:
+    needs: build
+    runs-on: ubuntu-latest
+    environment: staging
+    steps:
+      - name: Deploy to Staging EC2
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.STG_EC2_HOST }}
+          username: ${{ secrets.STG_EC2_USER }}
+          key: ${{ secrets.STG_EC2_SSH_KEY }}
+          timeout: 60s
+          script: |
+            cd ~/MERN-CHAT-APP
+            docker-compose pull
+            sleep 5
+            docker-compose up -d --remove-orphans
+            docker image prune -f
+            echo "✅ Staging deployed"
+
+  deploy-production:
+    needs: deploy-staging
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - name: Deploy to Production EC2
         uses: appleboy/ssh-action@v1
         with:
           host: ${{ secrets.EC2_HOST }}
@@ -49,3 +76,4 @@ jobs:
             sleep 5
             docker-compose up -d --remove-orphans
             docker image prune -f
+            echo "✅ Production deployed"
