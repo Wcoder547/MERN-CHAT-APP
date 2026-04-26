@@ -36,16 +36,16 @@ jobs:
           push: true
           tags: ${{ env.FRONTEND_IMAGE }}:latest
 
-            - name: Deploy to EC2
+      - name: Deploy to EC2
         uses: appleboy/ssh-action@v1
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
-          # Increase timeout to handle the "channel open failed" errors
           timeout: 60s
           script: |
             cd ~/MERN-CHAT-APP
             docker-compose pull
+            sleep 5
             docker-compose up -d --remove-orphans
             docker image prune -f
