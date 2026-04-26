@@ -5,8 +5,8 @@ on:
     branches: [main]
 
 env:
-  BACKEND_IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/my-app-backend
-  FRONTEND_IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/my-app-frontend
+  BACKEND_IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/mern-chat-app-backend
+  FRONTEND_IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/mern-chat-app-frontend
 
 jobs:
   build-and-deploy:
