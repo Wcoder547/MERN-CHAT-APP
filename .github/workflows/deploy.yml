@@ -56,7 +56,7 @@ jobs:
             sleep 5
             docker-compose up -d --remove-orphans
             docker image prune -f
-            echo "✅ Staging deployed"
+            echo "Staging deployed"
 
   deploy-production:
     needs: deploy-staging
@@ -76,4 +76,4 @@ jobs:
             sleep 5
             docker-compose up -d --remove-orphans
             docker image prune -f
-            echo "✅ Production deployed"
+            echo "Production deployed"
