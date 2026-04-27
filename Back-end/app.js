@@ -65,8 +65,13 @@ app.use(cors(corsOptions));
 app.use("/api/v1/user", userRoute);
 app.use("/api/v1/chat", chatRoute);
 app.use("/api/v1/admin", adminRoute);
-app.use("/api/v1/health", (req, res) => {
-  res.status(200).json({ status: "success", message: "API is healthy" });
+app.get("/api/v1/health", (req, res) => {
+  res.status(200).json({
+    status: "ok",
+    uptime: process.uptime(),
+    timestamp: new Date().toISOString(),
+    environment: process.env.NODE_ENV || "PRODUCTION",
+  });
 });
 
 app.get("/", (req, res) => {
