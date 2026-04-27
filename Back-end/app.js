@@ -57,6 +57,9 @@ const io = new Server(server, {
 
 app.set("io", io);
 
+logger.info("Testing Winston file transport: combined.log");
+logger.error("Testing Winston file transport: error.log");
+
 // Using Middlewares Here
 app.use(express.json());
 app.use(cookieParser());
