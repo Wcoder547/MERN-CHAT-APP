@@ -6,7 +6,8 @@ on:
 
 env:
   BACKEND_IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/mern-chat-app-backend
-  FRONTEND_IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/mern-chat-app-frontend
+  FRONTEND_STAGING_IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/mern-chat-app-frontend-staging
+  FRONTEND_PROD_IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/mern-chat-app-frontend-prod
 
 jobs:
   build:
@@ -14,13 +15,16 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
+
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
+
       - name: Build and push backend
         uses: docker/build-push-action@v5
         with:
@@ -29,12 +33,26 @@ jobs:
           tags: ${{ env.BACKEND_IMAGE }}:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
-      - name: Build and push frontend
+
+      - name: Build and push frontend (staging)
         uses: docker/build-push-action@v5
         with:
           context: ./Front-end
           push: true
-          tags: ${{ env.FRONTEND_IMAGE }}:latest
+          tags: ${{ env.FRONTEND_STAGING_IMAGE }}:latest
+          build-args: |
+            VITE_SERVER=${{ secrets.STG_VITE_SERVER }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Build and push frontend (prod)
+        uses: docker/build-push-action@v5
+        with:
+          context: ./Front-end
+          push: true
+          tags: ${{ env.FRONTEND_PROD_IMAGE }}:latest
+          build-args: |
+            VITE_SERVER=${{ secrets.PROD_VITE_SERVER }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -52,9 +70,9 @@ jobs:
           timeout: 60s
           script: |
             cd ~/MERN-CHAT-APP
-            docker-compose pull
+            docker compose pull
             sleep 5
-            docker-compose up -d --remove-orphans
+            docker compose up -d --remove-orphans
             docker image prune -f
             echo "Staging deployed"
 
@@ -72,8 +90,8 @@ jobs:
           timeout: 60s
           script: |
             cd ~/MERN-CHAT-APP
-            docker-compose pull
+            docker compose pull
             sleep 5
-            docker-compose up -d --remove-orphans
+            docker compose up -d --remove-orphans
             docker image prune -f
             echo "Production deployed"
