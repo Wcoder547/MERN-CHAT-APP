@@ -1,5 +1,7 @@
 import { faker } from "@faker-js/faker";
 import { User } from "../models/user.js";
+import logger from "../utils/logger.js";
+
 
 const createUser = async (numUsers) => {
   try {
@@ -21,10 +23,10 @@ const createUser = async (numUsers) => {
 
     await Promise.all(usersPromise);
 
-    console.log("Users created", numUsers);
+    logger.info("Users created successfully");
     process.exit(0); // ✅ exit(0) means success
   } catch (error) {
-    console.error(error);
+    logger.error("Error creating users:", error);
     process.exit(1);
   }
 };

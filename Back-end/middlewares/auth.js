@@ -4,6 +4,7 @@ import { adminSecretKey } from "../app.js";
 import { TryCatch } from "./error.js";
 import { CHATTU_TOKEN } from "../constants/config.js";
 import { User } from "../models/user.js";
+import logger from "../utils/logger.js";
 
 const isAuthenticated = TryCatch((req, res, next) => {
   const token = req.cookies[CHATTU_TOKEN];
@@ -53,7 +54,7 @@ const socketAuthenticator = async (err, socket, next) => {
 
     return next();
   } catch (error) {
-    console.log(error);
+    logger.error("Socket authentication error:", error);
     return next(new ErrorHandler("Please login to access this route", 401));
   }
 };

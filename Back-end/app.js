@@ -8,6 +8,8 @@ import { createServer } from "http";
 import { v4 as uuid } from "uuid";
 import cors from "cors";
 import { v2 as cloudinary } from "cloudinary";
+import logger from "./utils/logger.js";
+import morgan from "morgan";
 import {
   CHAT_JOINED,
   CHAT_LEAVED,
@@ -39,8 +41,7 @@ const onlineUsers = new Set();
 
 connectDB(mongoURI);
 
-console.log("laadle ci/cd pipeline bna li he ");
-console.log("laadle ci/cd pipeline bna li he 2");
+logger.info("Database connected successfully");
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -64,10 +65,19 @@ app.use(cors(corsOptions));
 app.use("/api/v1/user", userRoute);
 app.use("/api/v1/chat", chatRoute);
 app.use("/api/v1/admin", adminRoute);
+app.use("/api/v1/health", (req, res) => {
+  res.status(200).json({ status: "success", message: "API is healthy" });
+});
 
 app.get("/", (req, res) => {
   res.send("Hello World");
 });
+
+const morganStream = {
+  write: (message) => logger.http(message.trim()),
+};
+
+app.use(morgan("combined", { stream: morganStream }));
 
 //middleware for socket authentication
 io.use((socket, next) => {
@@ -80,10 +90,10 @@ io.use((socket, next) => {
 });
 
 io.on("connection", (socket) => {
-  console.log("New client connected:", socket.id);
+  logger.info("New client connected:", socket.id);
   const user = socket.user;
   userSocketIDs.set(user._id.toString(), socket.id);
-  console.log(`User connected: ${user.name}`);
+  logger.info(`User connected: ${user.name}`);
 
   socket.on(NEW_MESSAGE, async ({ chatId, members, message }) => {
     const messageForRealTime = {
@@ -151,7 +161,7 @@ io.on("connection", (socket) => {
 app.use(errorMiddleware);
 
 server.listen(port, () => {
-  console.log(`Server is running on port ${port} in ${envMode} Mode`);
+  logger.info(`Server is running on port ${port} in ${envMode} Mode`);
 });
 
 export { envMode, adminSecretKey, userSocketIDs };

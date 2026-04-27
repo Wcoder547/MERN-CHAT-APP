@@ -2,6 +2,8 @@ import { faker, simpleFaker } from "@faker-js/faker";
 import { Chat } from "../models/chat.js";
 import { Message } from "../models/message.js";
 import { User } from "../models/user.js";
+import logger from "../utils/logger.js";
+
 
 const createSingleChats = async (numChats) => {
   try {
@@ -22,10 +24,10 @@ const createSingleChats = async (numChats) => {
 
     await Promise.all(chatsPromise);
 
-    console.log("Chats created successfully");
+    logger.info("Single chats created successfully"); 
     process.exit();
   } catch (error) {
-    console.error(error);
+    logger.error("Error creating single chats:", error);
     process.exit(1);
   }
 };
@@ -62,10 +64,10 @@ const createGroupChats = async (numChats) => {
 
     await Promise.all(chatsPromise);
 
-    console.log("Chats created successfully");
+    logger.info("Group chats created successfully");
     process.exit();
   } catch (error) {
-    console.error(error);
+    logger.error("Error creating group chats:", error);
     process.exit(1);
   }
 };
@@ -92,10 +94,10 @@ const createMessages = async (numMessages) => {
 
     await Promise.all(messagesPromise);
 
-    console.log("Messages created successfully");
+    logger.info("Messages created successfully");
     process.exit();
   } catch (error) {
-    console.error(error);
+    logger.error("Error creating messages:", error);
     process.exit(1);
   }
 };
@@ -120,10 +122,10 @@ const createMessagesInAChat = async (chatId, numMessages) => {
 
     await Promise.all(messagesPromise);
 
-    console.log("Messages created successfully");
+    logger.info("Messages created successfully");
     process.exit();
   } catch (error) {
-    console.error(error);
+    logger.error("Error creating messages in a chat:", error);
     process.exit(1);
   }
 };

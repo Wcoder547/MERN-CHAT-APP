@@ -3,6 +3,8 @@ import jwt from "jsonwebtoken";
 import { v4 as uuid } from "uuid";
 import { v2 as cloudinary } from "cloudinary";
 import { getBase64, getSockets } from "../lib/helper.js";
+import logger from "./logger.js";
+
 
 const cookieOptions = {
   maxAge: 15 * 24 * 60 * 60 * 1000,
@@ -15,7 +17,7 @@ const cookieOptions = {
 const connectDB = (uri) => {
   mongoose
     .connect(uri, { dbName: "chatAPP" })
-    .then((data) => console.log(`Connected to DB: ${data.connection.host}`))
+    .then((data) => logger.info(`Connected to DB: ${data.connection.host}`))
     .catch((err) => {
       throw err;
     });
