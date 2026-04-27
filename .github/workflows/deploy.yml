@@ -53,8 +53,7 @@ jobs:
           tags: ${{ env.FRONTEND_PROD_IMAGE }}:latest
           build-args: |
             VITE_SERVER=${{ secrets.PROD_VITE_SERVER }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          no-cache: true # Ensure prod build is fresh and not cached
 
   deploy-staging:
     needs: build
